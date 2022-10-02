@@ -1,0 +1,103 @@
+<!-- Username không được trống, tối thiểu 5 ký tự, ko chứa ký tự đặc biệt
+Mật khẩu không được trống, tối thiểu 8 ký tự
+Mật khẩu nhập lại phải trùng
+Phone phải là những con số và 10 ký tự
+Email phải đúng định dạng, va không được để trống. -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./index.css">
+    <script>
+        // Lấy giá trị của một input
+        function getValue(id){
+            return document.getElementById(id).value.trim();
+        }
+        
+        // Hiển thị lỗi
+        function showError(key, mess){
+            document.getElementById(key + '_error').innerHTML = mess;
+        }
+        function validate()
+            {
+                var flag = true;
+                // 1 id
+                var id = getValue('id');
+                if (id == '' || id.length < 5 || !/^[a-zA-Z0-9]+$/.test(id)){
+                    flag = false;
+                    document.getElementById("baoloi").innerHTML="Chưa nhập hoặc nhập sai id";
+                }
+                // 2. password
+                var password = getValue('password');
+                var repassword = getValue('repassword');
+                if (password == '' || password.length < 8 || password != repassword){
+                    flag = false;
+                    showError('password', 'Vui lòng kiểm tra lại Password');
+                }
+                
+                // 3. Phone
+                var phone = getValue('phone');
+                if (phone != '' &&  !/^[0-9]{10}$/.test(phone)){
+                    flag = false;
+                    showError('phone', 'Vui lòng kiểm tra lại Phone');
+                }
+                
+                // 4. Email
+                var email = getValue('email');
+                var mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+                if (!mailformat.test(email)){
+                    flag = false;
+                    
+                    showError('phone', 'Vui lòng kiểm tra lại Email');
+                }
+                return flag;
+            }
+    </script>
+</head>
+<body>
+    <form action="/" method="POST" enctype="multipart/form-data" onclick="return validate();" id="Insert">
+        <h4 id="baoloi" style="color: red;"></h4>
+        <input type="text" name="id" placeholder="Nhập mã bài báo" id="id">
+        <input type="text" name="tenBaiBao" placeholder="Nhập tên bài báo" id="tenBaiBao">
+        <input type="text" name="tenTacGia" placeholder="Nhập tên tác giả" id="tenTacGia">
+        <input type="text" name="ISBN" placeholder="Nhập chỉ số ISBN" id="ISBN">
+        <input type="text" name="soTrang" placeholder="Nhập số trang" id="soTrang">
+        <input type="text" name="namXB" placeholder="Nhập năm xuất bản" id="namXB">
+        
+        <input type="submit" value="Thêm bài báo">
+    </form>
+    <table>
+        <thead>
+            <th>Mã bài báo</th>
+            <th>Tên bài báo</th>
+            <th>Tên tác giả</th>
+            <th>Chỉ số ISBN</th>
+            <th>Số trang</th>
+            <th>Năm xuất bản</th> 
+            <th></th>
+        </thead>
+        <tbody>
+        <% baibao1.forEach((baibao1)=>{ %>
+            <tr>
+                <td><%=baibao1.id%></td>
+                <td><%=baibao1.tenBaiBao%></td>
+                <td><%=baibao1.tenTacGia%></td>
+                <td><%=baibao1.ISBN%></td>
+                <td><%=baibao1.soTrang%></td>
+                <td><%=baibao1.namXB%></td>
+                <td>
+                    <form action="/delete" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="id" value="<%=baibao1.id%>">
+                        <input type="submit" value="delete">
+                    </form>
+                </td>
+            </tr>
+            <% });%>
+        </tbody>
+    </table>
+</body>
+</html>
